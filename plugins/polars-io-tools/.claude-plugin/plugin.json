@@ -1,0 +1,26 @@
+{
+  "name": "polars-io-tools",
+  "version": "0.1.1",
+  "description": "polars-io-tools project guide. Covers lazy Polars custom I/O sources, predicate and projection pushdown, SQL/ClickHouse/Datadog/Delta readers and sinks, cache/cache_parquet, filtered joins, multi_source, concat_named, Ray execution, expression visitors, and Python/Rust development workflows.",
+  "author": {
+    "name": "Point72, L.P.",
+    "url": "https://github.com/Point72"
+  },
+  "homepage": "https://github.com/Point72/polars-io-tools",
+  "repository": "https://github.com/Point72/polars-io-tools",
+  "license": "Apache-2.0",
+  "keywords": [
+    "polars",
+    "lazyframe",
+    "predicate-pushdown",
+    "projection-pushdown",
+    "sql",
+    "clickhouse",
+    "datadog",
+    "delta-lake",
+    "ray",
+    "python",
+    "rust"
+  ],
+  "skills": "./skills/"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "polars-io-tools",
+  "version": "0.1.1",
+  "description": "polars-io-tools project guide. Covers lazy Polars custom I/O sources, predicate and projection pushdown, SQL/ClickHouse/Datadog/Delta readers and sinks, cache/cache_parquet, filtered joins, multi_source, concat_named, Ray execution, expression visitors, and Python/Rust development workflows.",
+  "author": {
+    "name": "Point72, L.P.",
+    "email": "OpenSource@point72.com",
+    "url": "https://github.com/Point72"
+  },
+  "homepage": "https://github.com/Point72/polars-io-tools",
+  "repository": "https://github.com/Point72/polars-io-tools",
+  "license": "Apache-2.0",
+  "keywords": [
+    "polars",
+    "lazyframe",
+    "predicate-pushdown",
+    "projection-pushdown",
+    "sql",
+    "clickhouse",
+    "datadog",
+    "delta-lake",
+    "ray",
+    "python",
+    "rust"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "polars-io-tools",
+    "shortDescription": "Lazy Polars I/O and pushdown guide",
+    "longDescription": "Guidance for implementing, debugging, reviewing, and documenting polars-io-tools lazy I/O sources, pushdown-preserving query helpers, caches, and Python/Rust development workflows.",
+    "developerName": "Point72",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/Point72/polars-io-tools",
+    "brandColor": "#CD792C",
+    "defaultPrompt": [
+      "Use $polars-io-tools to debug predicate pushdown.",
+      "Use $polars-io-tools to add a lazy Polars I/O source.",
+      "Use $polars-io-tools to review cache or join behavior."
+    ]
+  }
+}
