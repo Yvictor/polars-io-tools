@@ -1,0 +1,41 @@
+FROM python:3.13-slim
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends \
+        odbc-postgresql \
+        unixodbc \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Keep PostgreSQL on Debian's current psqlODBC while the combined image remains
+# pinned to bookworm for Microsoft's SQL Server ODBC repository.
+RUN pip install --no-cache-dir \
+    arrow_odbc \
+    boto3 \
+    cloudpickle \
+    connectorx==0.4.5 \
+    deltalake \
+    duckdb \
+    narwhals \
+    numpy \
+    orjson \
+    packaging \
+    pandas \
+    polars \
+    portion \
+    pyarrow \
+    pyodbc \
+    pydantic \
+    ray \
+    requests \
+    sqlglot \
+    tqdm
+
+COPY . /workspace
+
+ENTRYPOINT ["python", "benchmarks/benchmark_sql_backends.py"]

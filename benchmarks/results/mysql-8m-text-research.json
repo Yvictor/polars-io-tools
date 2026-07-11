@@ -1,0 +1,98 @@
+{
+  "aligned_odbc_schema": "id: int64\ncreated_at: timestamp[ns]\namount: double\ncategory: string\npayload: string\nactive: int64\nnullable_value: int64",
+  "fetch_size": 65536,
+  "samples": [
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 14594796171604330660,
+      "mib_per_second": 44.447612820471,
+      "result_bytes": 920200000,
+      "rows": 8000000,
+      "rows_per_second": 405187.5684489302,
+      "run": 0,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Int64, 'nullable_value': Int64})",
+      "seconds": 19.743942368775606
+    },
+    {
+      "columns": 7,
+      "engine": "connectorx",
+      "fingerprint": 14594796171604330660,
+      "mib_per_second": 46.73063612422599,
+      "result_bytes": 920200000,
+      "rows": 8000000,
+      "rows_per_second": 425999.76965526096,
+      "run": 0,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Int64, 'nullable_value': Int64})",
+      "seconds": 18.779352877289057
+    },
+    {
+      "columns": 7,
+      "engine": "connectorx",
+      "fingerprint": 14594796171604330660,
+      "mib_per_second": 46.78199512207533,
+      "result_bytes": 920200000,
+      "rows": 8000000,
+      "rows_per_second": 426467.9618963292,
+      "run": 1,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Int64, 'nullable_value': Int64})",
+      "seconds": 18.758736211806536
+    },
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 14594796171604330660,
+      "mib_per_second": 44.875117015898205,
+      "result_bytes": 920200000,
+      "rows": 8000000,
+      "rows_per_second": 409084.72679906525,
+      "run": 1,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Int64, 'nullable_value': Int64})",
+      "seconds": 19.55585108883679
+    },
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 14594796171604330660,
+      "mib_per_second": 44.382695614259006,
+      "result_bytes": 920200000,
+      "rows": 8000000,
+      "rows_per_second": 404595.77862566616,
+      "run": 2,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Int64, 'nullable_value': Int64})",
+      "seconds": 19.77282122708857
+    },
+    {
+      "columns": 7,
+      "engine": "connectorx",
+      "fingerprint": 14594796171604330660,
+      "mib_per_second": 48.34083697982901,
+      "result_bytes": 920200000,
+      "rows": 8000000,
+      "rows_per_second": 440678.47404443537,
+      "run": 2,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Int64, 'nullable_value': Int64})",
+      "seconds": 18.153825229033828
+    }
+  ],
+  "summary": {
+    "connectorx": {
+      "mean_seconds": 18.563971439376473,
+      "median_mib_per_second": 46.78199512207533,
+      "median_rows_per_second": 426467.9618963292,
+      "median_seconds": 18.758736211806536,
+      "min_seconds": 18.153825229033828,
+      "runs": 3
+    },
+    "connectorx_speedup": 1.0525198577262893,
+    "odbc": {
+      "mean_seconds": 19.69087156156699,
+      "median_mib_per_second": 44.447612820471,
+      "median_rows_per_second": 405187.5684489302,
+      "median_seconds": 19.743942368775606,
+      "min_seconds": 19.55585108883679,
+      "runs": 3
+    }
+  },
+  "warmups": 1
+}

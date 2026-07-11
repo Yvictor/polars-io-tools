@@ -41,6 +41,51 @@ The dialect is detected from the ODBC connection, so the generated SQL matches y
 database. Pass `fetch_size=` to control the batch size used when Polars does not
 request one.
 
+To test a native database client, install the optional ConnectorX dependency and pass a
+ConnectorX URI. ODBC remains the default transport.
+
+```bash
+uv pip install 'polars-io-tools[connectorx]'
+```
+
+```python
+lf = scan_db(
+    "SELECT id, ts, price FROM trades",
+    connection="postgresql://reader:password@db.example.com/mkt",
+    engine="connectorx",
+    fetch_size=65_536,
+)
+```
+
+The ConnectorX backend requests an Arrow record-batch stream, so large results are
+still yielded incrementally to Polars. ConnectorX options such as `protocol`,
+`partition_on`, and `partition_num` can be passed as keyword arguments.
+`batch_size_override=` can force a connector batch size for controlled benchmarks;
+normal application code should generally let Polars select it.
+
+For high-throughput SQL Server reads, wheels built with the Rust extension also expose
+the experimental `mssql_native` backend. It runs one async TDS stream per partition and
+writes directly into Arrow builders on a background Rust runtime.
+
+```python
+lf = scan_db(
+    "SELECT id, created_at, amount FROM dbo.benchmark_events",
+    connection="mssql://reader:password@sql.example.com/warehouse",
+    engine="mssql_native",
+    partition_on="id",
+    # The upper boundary is exclusive.
+    partition_range=(1, 8_000_001),
+    partition_num=8,
+    fetch_size=65_536,
+)
+```
+
+Partitioned reads use multiple database connections and do not preserve global row
+order. The query must be usable as a SQL Server subquery. The first implementation
+supports integer, float, bit, character, binary, and datetime/datetime2 results;
+decimal, date/time-only, UUID, and SQL variant columns currently raise an explicit
+unsupported-type error. ODBC remains the compatibility fallback for those types.
+
 ## Read from ClickHouse
 
 `scan_clickhouse` streams query results over ClickHouse's HTTP interface as Arrow IPC.

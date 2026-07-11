@@ -1,0 +1,125 @@
+services:
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: benchmark
+      POSTGRES_USER: benchmark
+      POSTGRES_PASSWORD: benchmark
+    command:
+      - postgres
+      - -c
+      - shared_buffers=512MB
+      - -c
+      - max_connections=100
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U benchmark -d benchmark"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: benchmark
+      MYSQL_USER: benchmark
+      MYSQL_PASSWORD: benchmark
+      MYSQL_ROOT_PASSWORD: benchmark-root
+    command:
+      - --innodb-buffer-pool-size=1G
+      - --max-connections=100
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u benchmark -pbenchmark --silent"]
+      interval: 3s
+      timeout: 5s
+      retries: 60
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: "BenchMark2026!"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'BenchMark2026!' -C -Q 'SELECT 1' -b
+      interval: 3s
+      timeout: 10s
+      retries: 60
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+  mssql-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      ACCEPT_EULA: "Y"
+    entrypoint: /opt/mssql-tools18/bin/sqlcmd
+    command:
+      - -S
+      - mssql
+      - -U
+      - sa
+      - -P
+      - "BenchMark2026!"
+      - -C
+      - -b
+      - -i
+      - /init/001-benchmark-data.sql
+    volumes:
+      - ./mssql-init:/init:ro
+
+  benchmark:
+    build:
+      context: ../..
+      dockerfile: benchmarks/docker/Dockerfile.postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PYTHONPATH: /workspace
+      PIOT_ODBC_CONNECTION: Driver={PostgreSQL Unicode};Server=postgres;Port=5432;Database=benchmark;Uid=benchmark;Pwd=benchmark;
+      PIOT_CONNECTORX_URI: postgresql://benchmark:benchmark@postgres:5432/benchmark
+    volumes:
+      - ../results:/results
+
+  benchmark-mysql:
+    build:
+      context: ../..
+      dockerfile: benchmarks/docker/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      PYTHONPATH: /workspace
+      PIOT_ODBC_CONNECTION: Driver={MariaDB Unicode};Server=mysql;Port=3306;Database=benchmark;User=benchmark;Password=benchmark;
+      PIOT_CONNECTORX_URI: mysql://benchmark:benchmark@mysql:3306/benchmark
+    volumes:
+      - ../results:/results
+
+  benchmark-mssql:
+    build:
+      context: ../..
+      dockerfile: benchmarks/docker/Dockerfile
+    depends_on:
+      mssql-init:
+        condition: service_completed_successfully
+    environment:
+      PYTHONPATH: /workspace
+      PIOT_ODBC_CONNECTION: Driver={ODBC Driver 18 for SQL Server};Server=mssql,1433;Database=benchmark;Uid=sa;Pwd=BenchMark2026!;Encrypt=yes;TrustServerCertificate=yes;
+      PIOT_CONNECTORX_URI: mssql://sa:BenchMark2026%21@mssql:1433/benchmark?encrypt=true&trust_server_certificate=true
+    volumes:
+      - ../results:/results
+
+volumes:
+  mssql-data:
+  postgres-data:
+  mysql-data:

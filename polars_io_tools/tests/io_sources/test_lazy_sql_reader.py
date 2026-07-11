@@ -175,6 +175,13 @@ def fake_read_arrow_batches_from_odbc(query: str, batch_size: int, connection_st
     return FakeBatchReader(table, batch_size)
 
 
+def fake_read_sql_connectorx(conn: str, query: str, return_type: str, batch_size: int, **kwargs):
+    assert return_type == "arrow_stream"
+    global _duckdb_conn
+    table = _duckdb_conn.execute(query).fetch_arrow_table()
+    return FakeBatchReader(table, batch_size)
+
+
 @pytest.fixture(autouse=True)
 def patch_odbc(monkeypatch, duckdb_connection):
     # Patch arrow_odbc directly since it's imported lazily inside functions
@@ -213,6 +220,131 @@ def test_wrap_binary_expr():
     res = convert_predicate_to_sql(expr, "tsql").sql("tsql")
     expected = "((A > 5) OR (B = 10))"
     assert res == expected
+
+
+@pytest.mark.parametrize(
+    ("uri", "expected"),
+    [
+        ("postgresql://user:secret@localhost/db", "postgres"),
+        ("mysql://user:secret@localhost/db", "mysql"),
+        ("redshift://user:secret@localhost/db", "redshift"),
+        ("sqlite:///tmp/example.db", "sqlite"),
+    ],
+)
+def test_get_sqlglot_dialect_connectorx(uri, expected):
+    assert polars_utils.lazy_sql_reader.get_sqlglot_dialect_connectorx(uri) == expected
+
+
+def test_scan_db_connectorx_streams_with_pushdown(monkeypatch):
+    calls = []
+
+    def tracking_read_sql(**kwargs):
+        calls.append(kwargs.copy())
+        return fake_read_sql_connectorx(**kwargs)
+
+    monkeypatch.setitem(sys.modules, "connectorx", SimpleNamespace(read_sql=tracking_read_sql))
+
+    result = (
+        cpl.scan_db(
+            "SELECT id, name, score FROM EmployeeTbl",
+            "postgresql://user:secret@localhost/test",
+            fetch_size=7,
+            engine="connectorx",
+            batch_size_override=7,
+        )
+        .filter(pl.col("score") > 90)
+        .select("id", "name")
+        .collect()
+    )
+
+    assert result.columns == ["id", "name"]
+    assert result["id"].to_list() == [2, 7, 11, 14, 15]
+    assert len(calls) == 2
+    assert calls[0]["return_type"] == "arrow_stream"
+    assert calls[0]["batch_size"] == 1
+    assert calls[1]["batch_size"] == 7
+    assert "score" in calls[1]["query"]
+
+
+def test_mssql_native_arrow_reader_decodes_uri_and_partition_options(monkeypatch):
+    calls = []
+    expected = pa.table({"id": [1, 2], "name": ["a", "b"]})
+
+    def native_reader(*args):
+        calls.append(args)
+        return pa.RecordBatchReader.from_batches(expected.schema, expected.to_batches()).__arrow_c_stream__()
+
+    monkeypatch.setitem(sys.modules, "polars_io_tools.polars_io_tools", SimpleNamespace(mssql_native_arrow_stream=native_reader))
+    reader = polars_utils.lazy_sql_reader._mssql_native_arrow_reader(
+        "SELECT id, name FROM dbo.items",
+        "mssql://user:p%40ss@db.example:1444/warehouse?trust_server_certificate=true",
+        1024,
+        partition_on="id",
+        partition_range=(1, 101),
+        partition_num=4,
+        channel_capacity=6,
+    )
+
+    assert pa.Table.from_batches(list(reader)) == expected
+    assert calls == [
+        (
+            "db.example",
+            1444,
+            "warehouse",
+            "user",
+            "p@ss",
+            "SELECT id, name FROM dbo.items",
+            "id",
+            1,
+            101,
+            4,
+            1024,
+            6,
+            True,
+        )
+    ]
+
+
+@pytest.mark.parametrize(
+    ("connection", "options", "message"),
+    [
+        ("postgresql://u:p@host/db", {}, "requires an mssql"),
+        ("mssql://host/db", {}, "must include host, username, and password"),
+        ("mssql://u:p@host/db", {"partition_range": (1,)}, "must contain exactly"),
+        ("mssql://u:p@host/db", {"unknown": True}, "Unsupported mssql_native options"),
+    ],
+)
+def test_mssql_native_arrow_reader_rejects_invalid_configuration(connection, options, message):
+    with pytest.raises((TypeError, ValueError), match=message):
+        polars_utils.lazy_sql_reader._mssql_native_arrow_reader("SELECT 1", connection, 10, **options)
+
+
+def test_scan_db_rejects_unknown_engine():
+    with pytest.raises(ValueError, match="Unsupported database engine"):
+        cpl.scan_db("SELECT 1", "unused", engine="unknown")
+
+
+def test_scan_db_connectorx_uses_fetch_size_when_polars_does_not_set_batch_size(monkeypatch):
+    calls = []
+
+    def tracking_read_sql(**kwargs):
+        calls.append(kwargs.copy())
+        return fake_read_sql_connectorx(**kwargs)
+
+    monkeypatch.setitem(sys.modules, "connectorx", SimpleNamespace(read_sql=tracking_read_sql))
+    cpl.scan_db(
+        "SELECT id FROM EmployeeTbl",
+        "postgresql://user:secret@localhost/test",
+        fetch_size=7,
+        engine="connectorx",
+    ).collect()
+
+    assert calls[1]["batch_size"] == 7
+
+
+def test_scan_db_rejects_non_positive_batch_size_override():
+    with pytest.raises(ValueError, match="batch_size_override must be positive"):
+        cpl.scan_db("SELECT 1", "unused", batch_size_override=0)
 
 
 def test_logical_or_operator():

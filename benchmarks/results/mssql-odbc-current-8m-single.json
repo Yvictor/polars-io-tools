@@ -1,0 +1,77 @@
+{
+  "aligned_odbc_schema": "id: int64\ncreated_at: timestamp[ns]\namount: double\ncategory: string\npayload: string\nactive: bool\nnullable_value: int64",
+  "fetch_size": 65536,
+  "samples": [
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 114.27517349054854,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1118303.3534113432,
+      "run": 0,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 7.153694009408355
+    },
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 112.71640870196283,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1103049.1924504843,
+      "run": 1,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 7.252623051404953
+    },
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 112.59803578392517,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1101890.788335652,
+      "run": 2,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 7.260247644037008
+    },
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 114.05997378541984,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1116197.396845734,
+      "run": 3,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 7.167191056534648
+    },
+    {
+      "columns": 7,
+      "engine": "odbc",
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 113.03034945739864,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1106121.4345556812,
+      "run": 4,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 7.232478957623243
+    }
+  ],
+  "summary": {
+    "odbc": {
+      "mean_seconds": 7.213246943801641,
+      "median_mib_per_second": 113.03034945739864,
+      "median_rows_per_second": 1106121.4345556812,
+      "median_seconds": 7.232478957623243,
+      "min_seconds": 7.153694009408355,
+      "runs": 5
+    }
+  },
+  "warmups": 1
+}
