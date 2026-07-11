@@ -14,7 +14,12 @@ path = "src/lib.rs"
 crate-type = ["rlib"]
 
 [dependencies]
+arrow = { version = "58", features = ["ffi"] }
+chrono = "0.4"
+futures-util = "0.3"
+tiberius = { path = "vendor/tiberius", default-features = false, features = ["chrono", "rustls", "tds73"] }
+tokio = { version = "1", features = ["macros", "net", "rt-multi-thread", "sync"] }
+tokio-util = { version = "0.7", features = ["compat"] }
 
 [profile.test.junit]
 path = "junit.xml"
-

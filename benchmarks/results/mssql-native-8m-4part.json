@@ -1,0 +1,70 @@
+{
+  "batch_size": 65536,
+  "partitions": 4,
+  "samples": [
+    {
+      "columns": 7,
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 172.64761992566548,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1689539.437341807,
+      "run": 0,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 4.735018208622932
+    },
+    {
+      "columns": 7,
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 84.7341598217666,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 829213.311892382,
+      "run": 1,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 9.64769846946001
+    },
+    {
+      "columns": 7,
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 173.76224628713913,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1700447.2343703518,
+      "run": 2,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 4.704644659534097
+    },
+    {
+      "columns": 7,
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 169.67467597230342,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1660446.03856588,
+      "run": 3,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 4.817982526496053
+    },
+    {
+      "columns": 7,
+      "fingerprint": 13771397971404048380,
+      "mib_per_second": 159.24490430195692,
+      "result_bytes": 857200000,
+      "rows": 8000000,
+      "rows_per_second": 1558379.6992377862,
+      "run": 4,
+      "schema": "Schema({'id': Int64, 'created_at': Datetime(time_unit='ns', time_zone=None), 'amount': Float64, 'category': String, 'payload': String, 'active': Boolean, 'nullable_value': Int64})",
+      "seconds": 5.133537098765373
+    }
+  ],
+  "summary": {
+    "mean_seconds": 5.807776192575693,
+    "median_mib_per_second": 169.67467597230342,
+    "median_rows_per_second": 1660446.03856588,
+    "median_seconds": 4.817982526496053,
+    "min_seconds": 4.704644659534097,
+    "runs": 5
+  },
+  "warmups": 1
+}
